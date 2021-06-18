@@ -10,7 +10,8 @@
       <el-button>el-button</el-button>
     </div>
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <p>app根组件</p>
+    <!-- <p>app根组件</p> -->
+    <router-view></router-view>
   </div>
 </template>
 
