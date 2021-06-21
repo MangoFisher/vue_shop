@@ -4,21 +4,20 @@
             <div class='avatar_box'>
                 <img src="../assets/logo.png" alt="">
             </div>
-            <el-form label-width="0px" class="login_form" :model1="login_form">
-                <el-form-item>
+            <el-form ref="loginFormRef" label-width="0px" class="login_form" :model="login_form" :rules="rules">
+                <el-form-item prop="user1">
                     <el-input v-model='login_form.user' prefix-icon="iconfont icon-user"></el-input>
                 </el-form-item>
-                <el-form-item>
+                <el-form-item prop="password">
                     <el-input v-model='login_form.password' type='password' prefix-icon="iconfont icon-3702mima"></el-input>
                 </el-form-item>
                 <el-form-item class='btns'>
                       <el-button type="primary">登录</el-button>
-                      <el-button type="info">重置</el-button>
+                      <el-button type="info" @click="resetLoginForm">重置</el-button>
                 </el-form-item>
             </el-form>
         </div>
     </div>
-
 </template>
 
 <script>
@@ -26,11 +25,28 @@ export default {
     data() {
         return {
             login_form: {
-                user: 'admin',
-                password: 'test123456'
+                user: '',  
+                password: ''
+            },
+            rules: {
+                user: [
+                    { required: true, message: '请输入姓名', trigger: 'blur' },
+                    { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur' },
+                    { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+                ]
+
             }
         };
     },
+    methods: {
+        resetLoginForm() {
+            // console.log(this)
+            this.$refs.loginFormRef.resetFields()
+        }
+    }
 }
 
 </script>
