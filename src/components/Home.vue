@@ -1,10 +1,15 @@
 <template>
-    <h1>这是home组件</h1>
+    <el-button type="info" @click="logout">退出</el-button>
 </template>
 
 <script>
 export default {
-    
+    methods: {
+        logout() {
+            window.sessionStorage.clear()
+            this.$router.push('/login')
+        }
+    }
 }
 </script>
 
