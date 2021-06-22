@@ -56,12 +56,12 @@
                     param.append('password', this.login_form.password)
 
                     const result = await this.$http.post('login', param)
-                    // console.log(result)
-                    console.log(this)
                     if (result.data.meta.status != 200)
                         return this.$message.error('登录失败')
-                    console.log('test111')
                     this.$message.success('登录成功')
+                    console.log(result)
+                    window.sessionStorage.setItem('token', result.data.data.token)
+                    this.$router.push('/home')
                 })
             }
             
