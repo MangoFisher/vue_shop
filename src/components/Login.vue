@@ -6,7 +6,7 @@
             </div>
             <el-form ref="loginFormRef" label-width="0px" class="login_form" :model="login_form" :rules="rules">
                 <el-form-item prop="user">
-                    <el-input v-model='login_form.user' prefix-icon="iconfont icon-user"></el-input>
+                    <el-input v-model='login_form.username' prefix-icon="iconfont icon-user"></el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input v-model='login_form.password' type='password' prefix-icon="iconfont icon-3702mima"></el-input>
@@ -25,11 +25,11 @@ export default {
     data() {
         return {
             login_form: {
-                user: '',  
-                password: ''
+                username: 'admin',  
+                password: '123456'
             },
             rules: {
-                user: [
+                username: [
                     { required: true, message: '请输入姓名', trigger: 'blur' },
                     { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
                 ],
@@ -47,8 +47,18 @@ export default {
             this.$refs.loginFormRef.resetFields()
         },
         login() {
-            this.$refs.loginFormRef.validate(valid => {
-                console.log(valid)
+            this.$refs.loginFormRef.validate(async valid => {
+                if (!valid) return
+                //解决前端发起的http请求中Content-Type同后端不兼容的问题，vue默认是application/json，这里是改成application/x-www-form-urlencoded
+                let param = new URLSearchParams()
+                param.append('username', this.login_form.username)
+                param.append('password', this.login_form.password)
+
+                const result = await this.$http.post('login', param)
+                console.log(result)
+                if (result.data.meta.status != 200)
+                    return console.log('登录失败')
+                return console.log("登录成功")
             })
         }
     }
