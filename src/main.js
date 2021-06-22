@@ -9,8 +9,6 @@ import axios from 'axios'
 Vue.prototype.$http = axios
 
 //设置axios 发起http请求的根路径
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded'
-// axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 
 Vue.config.productionTip = false

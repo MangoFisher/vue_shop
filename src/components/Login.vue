@@ -21,93 +21,96 @@
 </template>
 
 <script>
-export default {
-    data() {
-        return {
-            login_form: {
-                username: 'admin',  
-                password: '123456'
-            },
-            rules: {
-                username: [
-                    { required: true, message: '请输入姓名', trigger: 'blur' },
-                    { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
-                ],
-                password: [
-                    { required: true, message: '请输入密码', trigger: 'blur' },
-                    { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
-                ]
+    export default {
+        data() {
+            return {
+                login_form: {
+                    username: 'admin',  
+                    password: '123456'
+                },
+                rules: {
+                    username: [
+                        { required: true, message: '请输入姓名', trigger: 'blur' },
+                        { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+                    ],
+                    password: [
+                        { required: true, message: '请输入密码', trigger: 'blur' },
+                        { min: 3, max: 15, message: '长度在 3 到 15 个字符', trigger: 'blur' }
+                    ]
 
-            }
-        };
-    },
-    methods: {
-        resetLoginForm() {
-            // console.log(this)
-            this.$refs.loginFormRef.resetFields()
+                }
+            };
         },
-        login() {
-            this.$refs.loginFormRef.validate(async valid => {
-                if (!valid) return
-                //解决前端发起的http请求中Content-Type同后端不兼容的问题，vue默认是application/json，这里是改成application/x-www-form-urlencoded
-                let param = new URLSearchParams()
-                param.append('username', this.login_form.username)
-                param.append('password', this.login_form.password)
+        methods: {
+            resetLoginForm() {
+                // console.log(this)
+                this.$refs.loginFormRef.resetFields()
+            },
+            login() {
+                const _this = this
+                this.$refs.loginFormRef.validate(async valid => {
+                    if (!valid) return
+                    //解决前端发起的http请求中Content-Type同后端不兼容的问题，vue默认是application/json，这里是改成application/x-www-form-urlencoded
+                    let param = new URLSearchParams()
+                    param.append('username', this.login_form.username)
+                    param.append('password', this.login_form.password)
 
-                const result = await this.$http.post('login', param)
-                console.log(result)
-                if (result.data.meta.status != 200)
-                    return console.log('登录失败')
-                return console.log("登录成功")
-            })
-        }
+                    const result = await this.$http.post('login', param)
+                    // console.log(result)
+                    console.log(this)
+                    if (result.data.meta.status != 200)
+                        return this.$message.error('登录失败')
+                    console.log('test111')
+                    this.$message.success('登录成功')
+                })
+            }
+            
     }
-}
-
+    }
 </script>
 
 <style lang="less" scoped>
-.login_container {
-    background-color: #2b4b6b;
-    height: 100%;
-};
-.login_box {
-    width: 450px;
-    height: 300px;
-    background-color: #fff;
-    border-radius: 3px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    .avatar_box {
-        height: 130px;
-        width: 130px;
-        border: 1px solid #eee;
-        border-radius: 50%;
-        padding: 10px;
-        box-shadow: 0 0 10px #ddd;
+    .login_container {
+        background-color: #2b4b6b;
+        height: 100%;
+    };
+    .login_box {
+        width: 450px;
+        height: 300px;
+        background-color: #fff;
+        border-radius: 3px;
         position: absolute;
         left: 50%;
+        top: 50%;
         transform: translate(-50%, -50%);
-        background-color: #fff;
-        img {
-            width: 100%;
-            height: 100%;
+        .avatar_box {
+            height: 130px;
+            width: 130px;
+            border: 1px solid #eee;
             border-radius: 50%;
-            background-color: #eee;
+            padding: 10px;
+            box-shadow: 0 0 10px #ddd;
+            position: absolute;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                background-color: #eee;
+            }
         }
+    .btns {
+        display: flex;
+        justify-content: flex-end;
     }
-.btns {
-    display: flex;
-    justify-content: flex-end;
-}
-.login_form {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    padding: 0 20px;
-    box-sizing: border-box;
-}
-}
+    .login_form {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        padding: 0 20px;
+        box-sizing: border-box;
+    }
+    }
 </style>
