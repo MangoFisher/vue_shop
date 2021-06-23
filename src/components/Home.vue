@@ -11,16 +11,16 @@
         <el-container>
             <el-aside width="200px">
                 <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-                    <el-submenu index="1">
+                    <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
                             <i class="el-icon-location"></i>
-                            <span>导航一</span>
+                            <span>{{ item.authName }}</span>
                         </template>
-                        <el-menu-item index="1-1">
+                        <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id">
                             <template slot="title">
-                            <i class="el-icon-location"></i>
-                            <span>导航一</span>
-                        </template>
+                                <i class="el-icon-location"></i>
+                                <span>{{ subItem.authName }}</span>
+                            </template>
                         </el-menu-item>    
                     </el-submenu>
                 </el-menu>
@@ -32,10 +32,25 @@
 
 <script>
 export default {
+    data() {
+        return {
+            //左侧菜单数据
+            menuList: []
+        }
+    },
+    created() {
+        this.getMenuList()
+    },
     methods: {
         logout() {
             window.sessionStorage.clear()
             this.$router.push('/login')
+        },
+        async getMenuList() {
+            const { data: res } = await this.$http.get('menus')
+            if(res.meta.status !== 200) return this.$message.error('res.meta.msg')
+            this.menuList = res.data
+            console.log(res)
         }
     }
 }
