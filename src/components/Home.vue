@@ -13,12 +13,12 @@
                 <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
                     <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
-                            <i class="el-icon-location"></i>
+                            <i :class="iconObj[item.id]"></i>
                             <span>{{ item.authName }}</span>
                         </template>
                         <el-menu-item :index="subItem.id + ''" v-for="subItem in item.children" :key="subItem.id">
                             <template slot="title">
-                                <i class="el-icon-location"></i>
+                                <i class="el-icon-menu"></i>
                                 <span>{{ subItem.authName }}</span>
                             </template>
                         </el-menu-item>    
@@ -35,7 +35,14 @@ export default {
     data() {
         return {
             //左侧菜单数据
-            menuList: []
+            menuList: [],
+            iconObj: {
+                '125': 'iconfont icon-users',
+                '103': 'iconfont icon-tijikongjian',
+                '101': 'iconfont icon-shangpin',
+                '102': 'iconfont icon-danju',
+                '145': 'iconfont icon-baobiao'
+            }
         }
     },
     created() {
@@ -50,7 +57,7 @@ export default {
             const { data: res } = await this.$http.get('menus')
             if(res.meta.status !== 200) return this.$message.error('res.meta.msg')
             this.menuList = res.data
-            console.log(res)
+            // console.log(res)
         }
     }
 }
@@ -84,5 +91,9 @@ export default {
 
 .el-main {
     background-color: #EAEDF1;
+}
+
+.iconfont {
+    margin-right: 10px;
 }
 </style>
