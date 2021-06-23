@@ -9,7 +9,22 @@
             <el-button type="info" @click="logout">退出</el-button>
         </el-header>
         <el-container>
-            <el-aside width="200px">Aside</el-aside>
+            <el-aside width="200px">
+                <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>导航一</span>
+                        </template>
+                        <el-menu-item index="1-1">
+                            <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>导航一</span>
+                        </template>
+                        </el-menu-item>    
+                    </el-submenu>
+                </el-menu>
+            </el-aside>
             <el-main>Main</el-main>
         </el-container>
     </el-container>
