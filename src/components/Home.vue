@@ -10,7 +10,7 @@
         </el-header>
         <el-container>
             <el-aside width="200px">
-                <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+                <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :unique-opened="true">
                     <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
                             <i :class="iconObj[item.id]"></i>
@@ -87,6 +87,9 @@ export default {
 
 .el-aside {
     background-color: #333744;
+    .el-menu {
+        border-right: none;
+    }
 }
 
 .el-main {
