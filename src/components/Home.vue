@@ -11,13 +11,13 @@
         <el-container>
             <el-aside :width="isCollapse? '64px': '200px'">
                 <div class="troggle-button" @click="toggleCollapse">|||</div>
-                <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :unique-opened="true" :collapse="isCollapse" :collapse-transition="false" :router="true">
+                <el-menu background-color="#545c64" text-color="#fff" active-text-color="#ffd04b" :unique-opened="true" :collapse="isCollapse" :collapse-transition="false" :router="true" :default-active="activePath">
                     <el-submenu :index="item.id + ''" v-for="item in menuList" :key="item.id">
                         <template slot="title">
                             <i :class="iconObj[item.id]"></i>
                             <span>{{ item.authName }}</span>
                         </template>
-                        <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id">
+                        <el-menu-item :index="'/' + subItem.path" v-for="subItem in item.children" :key="subItem.id" @click="savaPath('/' + subItem.path)">
                             <template slot="title">
                                 <i class="el-icon-menu"></i>
                                 <span>{{ subItem.authName }}</span>
@@ -46,11 +46,13 @@ export default {
                 '102': 'iconfont icon-danju',
                 '145': 'iconfont icon-baobiao'
             },
-            isCollapse: false
+            isCollapse: false,
+            activePath: ''
         }
     },
     created() {
         this.getMenuList()
+        this.activePath = window.sessionStorage.getItem('activePath')
     },
     methods: {
         logout() {
@@ -65,6 +67,10 @@ export default {
         },
         toggleCollapse() {
             this.isCollapse = !this.isCollapse
+        },
+        savaPath(activePath) {
+            window.sessionStorage.setItem('activePath', activePath)
+            this.activePath = activePath
         }
     }
 }
