@@ -29,7 +29,7 @@
                 <el-table-column label="角色" prop="role_name"></el-table-column>
                 <el-table-column label="状态" prop="mg_state">
                     <template slot-scope="scope">
-                        <el-switch v-model="scope.row.mg_state">
+                        <el-switch v-model="scope.row.mg_state" @change="userStateChanged(scope.row)">
                         </el-switch>
                     </template>
                 </el-table-column>
@@ -83,17 +83,32 @@ export default {
         //监听pagesize发生变化
         handleSizeChange(newSize) {
             
-            console.log("newSize=" + newSize)
+            // console.log("newSize=" + newSize)
             this.queryInfo.pagesize = newSize
             this.getUsersList()
         },
 
         //监听pagenum发生变化
         handleCurrentChange(newPage) {
-            console.log("newPage=" + newPage)
+            // console.log("newPage=" + newPage)
             this.queryInfo.pagenum = newPage
             this.getUsersList()
+        },
+
+        async userStateChanged(userInfo) {
+            // console.log("userInfo= ")
+            // console.log(userInfo)
+            //字符串用反引号括起来非常重要
+            const { data: res } = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
+            if(res.meta.status !== 200) {
+                userInfo.mg_state = !userInfo.mg_state
+                return this.$message.erro('更改用户状态失败！！！')
+                
+                }
+            // console.log(res)
+            return this.$message.success('修改用户状态成功')
         }
+
     },
     created() {
         this.getUsersList()
