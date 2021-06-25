@@ -59,7 +59,22 @@
             title="提示"
             :visible.sync="addDialogVisible"
             width="30%">
-            <span>这是一段信息</span>
+
+            <el-form :model="addUserForm" :rules="addUserFormRules" ref="addUserFormRef" label-width="100px" class="demo-ruleForm">
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="addUserForm.username"></el-input>
+                </el-form-item>
+                <el-form-item label="密码" prop="password">
+                    <el-input v-model="addUserForm.password"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="addUserForm.email"></el-input>
+                </el-form-item>
+                <el-form-item label="手机" prop="mobile">
+                    <el-input v-model="addUserForm.mobile"></el-input>
+                </el-form-item>
+            </el-form>
+
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="addDialogVisible = false">确 定</el-button>
@@ -76,6 +91,18 @@ export default {
                 query: '',
                 pagenum: 1,
                 pagesize: 1
+            },
+            addUserForm: {
+                username: '',
+                password: '',
+                email: '',
+                mobile: ''
+            },
+            addUserFormRules: {
+                username: [{ required: true, message: '请输入用户名', trigger: 'blur' },],
+                password: [{ required: true, message: '请输入密码', trigger: 'blur' },],
+                email: [{ required: true, message: '请输入邮箱', trigger: 'blur' },],
+                mobile: [{ required: true, message: '请输入手机', trigger: 'blur' },]
             },
             usersList: [],
             total: 0,
