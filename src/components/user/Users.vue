@@ -27,7 +27,31 @@
 
 <script>
 export default {
-    
+    data() {
+        return {
+            queryInfo: {
+                query: '',
+                pagenum: 1,
+                pagesize: 2
+            },
+            usersList: [],
+            total: 0
+        }
+       
+    },
+    methods: {
+        async getUsersList() {
+        const { data: res } = await this.$http.get('users', { params: this.queryInfo } )
+        // console.log(res)
+        if(res.meta.status !== 200 ) return this.$message.erro("获取用户权限列表失败")
+        this.usersList = res.data.users
+        this.total = res.data.total
+        this.$message.success("获取用户权限列表成功")
+        }
+    },
+    created() {
+        this.getUsersList()
+    }
 }
 </script>
 
