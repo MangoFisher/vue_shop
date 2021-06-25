@@ -9,8 +9,7 @@
 
         <!-- 卡片区域 -->
         <el-card>
-            <!-- 搜索与添加区域 -->
-            
+            <!-- 搜索与添加区域 -->       
             <el-row :gutter="20">
                 <el-col :span="8">
                     <el-input placeholder="请输入内容">
@@ -21,6 +20,15 @@
                     <el-button type="primary">添加用户</el-button>
                 </el-col>
             </el-row>
+            <!-- 用户列表区域 -->
+            <el-table :data="usersList" :border="true" :stripe="true">
+                <el-table-column label="姓名" prop="username"></el-table-column>
+                <el-table-column label="邮箱" prop="email"></el-table-column>
+                <el-table-column label="电话" prop="mobile"></el-table-column>
+                <el-table-column label="角色" prop="role_name"></el-table-column>
+                <el-table-column label="状态" prop="mg_state"></el-table-column>
+                <el-table-column label="操作" ></el-table-column>
+            </el-table>
         </el-card>
     </div>
 </template>
