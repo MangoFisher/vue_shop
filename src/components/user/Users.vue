@@ -86,6 +86,22 @@
 <script>
 export default {
     data() {
+         //验证邮箱的规则
+        var checkEmail = (rule, value, callback) => {
+            const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
+            if(regEmail.test(value)) {
+                return callback()
+            } 
+            callback(new Error("请输入合法的邮箱"))
+        }
+
+        var checkMobile = (rule, value, callback) => {
+            const regMobile = /^(0|86|17951)?(13[0-9]|15[0123456789]|17[678]|18[0-9]|14[57])[0-9]{8}$/
+            if(regMobile.test(value)) {
+                return callback()
+            }
+            callback(new Error("请输入合法的手机号码"))
+        }
         return {
             queryInfo: {
                 query: '',
@@ -101,8 +117,14 @@ export default {
             addUserFormRules: {
                 username: [{ required: true, message: '请输入用户名', trigger: 'blur' },],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' },],
-                email: [{ required: true, message: '请输入邮箱', trigger: 'blur' },],
-                mobile: [{ required: true, message: '请输入手机', trigger: 'blur' },]
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    { validator: checkEmail, trigger: 'blur' }
+                    ],
+                mobile: [
+                    { required: true, message: '请输入手机', trigger: 'blur' },
+                    { validator: checkMobile, trigger: 'blur' }
+                    ]
             },
             usersList: [],
             total: 0,
@@ -112,12 +134,12 @@ export default {
     },
     methods: {
         async getUsersList() {
-        const { data: res } = await this.$http.get('users', { params: this.queryInfo } )
-        // console.log(res)
-        if(res.meta.status !== 200 ) return this.$message.erro("获取用户权限列表失败")
-        this.usersList = res.data.users
-        this.total = res.data.total
-        this.$message.success("获取用户权限列表成功")
+            const { data: res } = await this.$http.get('users', { params: this.queryInfo } )
+            // console.log(res)
+            if(res.meta.status !== 200 ) return this.$message.erro("获取用户权限列表失败")
+            this.usersList = res.data.users
+            this.total = res.data.total
+            this.$message.success("获取用户权限列表成功")
         },
         //监听pagesize发生变化
         handleSizeChange(newSize) {
@@ -146,7 +168,7 @@ export default {
                 }
             // console.log(res)
             return this.$message.success('修改用户状态成功')
-        }
+        },
 
     },
     created() {
