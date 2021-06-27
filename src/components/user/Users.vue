@@ -58,7 +58,7 @@
         <el-dialog
             title="提示"
             :visible.sync="addDialogVisible"
-            width="30%">
+            width="30%" @close="addDialogClosed">
 
             <el-form :model="addUserForm" :rules="addUserFormRules" ref="addUserFormRef" label-width="100px" class="demo-ruleForm">
                 <el-form-item label="用户名" prop="username">
@@ -86,6 +86,7 @@
 <script>
 export default {
     data() {
+        //重要提醒！！！自定义校验规则在data内部，return外部
          //验证邮箱的规则
         var checkEmail = (rule, value, callback) => {
             const regEmail = /^([a-zA-Z0-9_-])+@([a-zA-Z0-9_-])+(\.[a-zA-Z0-9_-])+/
@@ -169,6 +170,11 @@ export default {
             // console.log(res)
             return this.$message.success('修改用户状态成功')
         },
+
+        //监听添加用户对话框的关闭事件
+        addDialogClosed() {
+            this.$refs.addUserFormRef.resetFields()
+        }
 
     },
     created() {
