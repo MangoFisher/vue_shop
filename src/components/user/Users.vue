@@ -35,7 +35,7 @@
                 </el-table-column>
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
                         <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
                         <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
                             <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -143,7 +143,10 @@ export default {
             total: 0,
             addDialogVisible: false,
             //控制修改用户对话框是否展示
-            editDialogVisible: false
+            editDialogVisible: false,
+            //修改用户表单数据
+            editForm: {}
+
         }
        
     },
@@ -204,7 +207,13 @@ export default {
             this.addDialogVisible = false
         },
         //展示修改用户对话框
-        showEditDialog() {
+        async showEditDialog(id) {
+            const { data: res } = await this.$http.get('users/' + id)
+            // console.log(res)
+            if(res.meta.status !== 200) {
+                return this.$message.erro('查询用户信息失败')
+            }
+            this.editForm = res.data
             this.editDialogVisible = true
         }
 
