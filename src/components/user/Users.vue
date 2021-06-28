@@ -82,14 +82,24 @@
         </el-dialog>
         <!-- 修改用户对话框 -->
         <el-dialog
-            title="提示"
-            :visible.sync="editDialogVisible"
+            title="修改用户信息"
+            :visible.sync="userEditDialogVisible"
             width="30%"
             >
-            <span>修改用户</span>
+            <el-form :model="userEditForm" :rules="userEditFormRules" ref="userEditFormRef" label-width="70px">
+                <el-form-item label="用户名" prop="username">
+                    <el-input v-model="userEditForm.username" :disabled="true"></el-input>
+                </el-form-item>
+                <el-form-item label="邮箱" prop="email">
+                    <el-input v-model="userEditForm.email"></el-input>
+                </el-form-item>
+                <el-form-item label="手机" prop="mobile">
+                    <el-input v-model="userEditForm.mobile"></el-input>
+                </el-form-item>
+            </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="editDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
+                <el-button @click="userEditDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="userEditDialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -139,13 +149,24 @@ export default {
                     { validator: checkMobile, trigger: 'blur' }
                     ]
             },
+            //用户修改表单数据校验规则
+            userEditFormRules: {
+                email: [
+                    { required: true, message: '请输入邮箱', trigger: 'blur' },
+                    { validator: checkEmail, trigger: 'blur' }
+                    ],
+                mobile: [
+                    { required: true, message: '请输入手机', trigger: 'blur' },
+                    { validator: checkMobile, trigger: 'blur' }
+                    ]
+            },
             usersList: [],
             total: 0,
             addDialogVisible: false,
             //控制修改用户对话框是否展示
-            editDialogVisible: false,
+            userEditDialogVisible: false,
             //修改用户表单数据
-            editForm: {}
+            userEditForm: {}
 
         }
        
@@ -213,8 +234,8 @@ export default {
             if(res.meta.status !== 200) {
                 return this.$message.erro('查询用户信息失败')
             }
-            this.editForm = res.data
-            this.editDialogVisible = true
+            this.userEditForm = res.data
+            this.userEditDialogVisible = true
         }
 
     },
