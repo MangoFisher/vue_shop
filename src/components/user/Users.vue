@@ -84,6 +84,7 @@
         <el-dialog
             title="修改用户信息"
             :visible.sync="userEditDialogVisible"
+            @close="userEditDialogClosed"
             width="30%"
             >
             <el-form :model="userEditForm" :rules="userEditFormRules" ref="userEditFormRef" label-width="70px">
@@ -236,6 +237,10 @@ export default {
             }
             this.userEditForm = res.data
             this.userEditDialogVisible = true
+        },
+        //关闭用户修改对话框
+        userEditDialogClosed() {
+            this.$refs.userEditFormRef.resetFields()
         }
 
     },
