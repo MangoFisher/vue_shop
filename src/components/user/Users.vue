@@ -35,7 +35,7 @@
                 </el-table-column>
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
-                        <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+                        <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog"></el-button>
                         <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
                         <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
                             <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
@@ -78,6 +78,18 @@
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="addUser">确 定</el-button>
+            </span>
+        </el-dialog>
+        <!-- 修改用户对话框 -->
+        <el-dialog
+            title="提示"
+            :visible.sync="editDialogVisible"
+            width="30%"
+            >
+            <span>修改用户</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="editDialogVisible = false">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -129,7 +141,9 @@ export default {
             },
             usersList: [],
             total: 0,
-            addDialogVisible: false
+            addDialogVisible: false,
+            //控制修改用户对话框是否展示
+            editDialogVisible: false
         }
        
     },
@@ -184,10 +198,14 @@ export default {
             })
             //校验通过可以发起添加用户的http请求
             const { data: res } = await this.$http.post('users', this.addUserForm)
-            console.log(res)
+            // console.log(res)
             if(res.meta.status !=201) return this.$message.erro('添加用户失败')
             this.$message.success('添加用户成功')
             this.addDialogVisible = false
+        },
+        //展示修改用户对话框
+        showEditDialog() {
+            this.editDialogVisible = true
         }
 
     },
