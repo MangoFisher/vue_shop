@@ -36,7 +36,7 @@
                 <el-table-column label="操作" >
                     <template slot-scope="scope">
                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="showEditDialog(scope.row.id)"></el-button>
-                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="userDelete(scope.row.id)"></el-button>
+                        <el-button type="danger" icon="el-icon-delete" size="mini" @click="userDeleteById(scope.row.id)"></el-button>
                         <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
                             <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
                         </el-tooltip>
@@ -254,7 +254,7 @@ export default {
                 mobile: this.userEditForm.mobile
 
             } )
-            if(res.meta.status !==201) return this.$message.error('修改用户信息失败')
+            if(res.meta.status !== 200) return this.$message.error('修改用户信息失败')
             this.$message.success('修改用户信息成功')
             //关闭修改用户信息对话框
             this.userEditDialogVisible = false
@@ -262,7 +262,7 @@ export default {
             this.getUsersList()
         },
         //用户信息删除
-        async userDelete(id) {
+        async userDeleteById(id) {
             //如果用户确认删除，则返回字符串为confirm；如果用户取消删除，则返回字符串cancel;以此来区分用户的不同点击操作
             const res = await this.$confirm('此操作将删除该用户信息, 是否继续?', '提示', {
                                             confirmButtonText: '确定',
@@ -272,10 +272,12 @@ export default {
                                                 return err
                                             })
             if('confirm' !== res) return this.$message.info('用户取消删除！')
-            // this.$message.success('用户删除成功！')
-            // this.getUsersList()
+            const { data: result } = await this.$http.delete('users/' + id )
+            if(result.meta.status !== 200) return this.$message.error('用户删除失败！')
+            this.$message.success('用户删除成功！')
+            this.getUsersList()
 
-        }
+        }   
 
     },  
     created() {
