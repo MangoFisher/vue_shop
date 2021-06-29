@@ -176,10 +176,10 @@ export default {
         async getUsersList() {
             const { data: res } = await this.$http.get('users', { params: this.queryInfo } )
             // console.log(res)
-            if(res.meta.status !== 200 ) return this.$message.error("获取用户权限列表失败")
+            if(res.meta.status !== 200 ) return this.$message.error("获取用户列表失败")
             this.usersList = res.data.users
             this.total = res.data.total
-            this.$message.success("获取用户权限列表成功")
+            this.$message.success("获取用户列表成功")
         },
         //监听pagesize发生变化
         handleSizeChange(newSize) {

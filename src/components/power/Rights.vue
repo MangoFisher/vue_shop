@@ -14,7 +14,25 @@
 
 <script>
 export default {
-    
+    data() {
+        return {
+            rightsList: []
+        }
+    },
+    methods: {
+        //type为权限类型，list 列表显示权限, tree 树状显示权限
+        async getRightsList() {
+            const { data: res } = await this.$http.get('rights/' + 'list')
+            if(res.meta.status !== 200) return this.$message.error('获取权限列表失败')
+            console.log(res)
+            this.rightsList = res.data
+            this.$message.success('获取权限列表成功')
+        }
+    },
+    created() {
+        this.getRightsList()
+
+    }
 }
 </script>
 
