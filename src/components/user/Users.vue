@@ -100,7 +100,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="userEditDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="userEditDialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="userEditInfo(userEditForm.id)">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -176,7 +176,7 @@ export default {
         async getUsersList() {
             const { data: res } = await this.$http.get('users', { params: this.queryInfo } )
             // console.log(res)
-            if(res.meta.status !== 200 ) return this.$message.erro("获取用户权限列表失败")
+            if(res.meta.status !== 200 ) return this.$message.error("获取用户权限列表失败")
             this.usersList = res.data.users
             this.total = res.data.total
             this.$message.success("获取用户权限列表成功")
@@ -203,7 +203,7 @@ export default {
             const { data: res } = await this.$http.put(`users/${userInfo.id}/state/${userInfo.mg_state}`)
             if(res.meta.status !== 200) {
                 userInfo.mg_state = !userInfo.mg_state
-                return this.$message.erro('更改用户状态失败！！！')
+                return this.$message.error('更改用户状态失败！！！')
                 
                 }
             // console.log(res)
@@ -224,7 +224,7 @@ export default {
             //校验通过可以发起添加用户的http请求
             const { data: res } = await this.$http.post('users', this.addUserForm)
             // console.log(res)
-            if(res.meta.status !=201) return this.$message.erro('添加用户失败')
+            if(res.meta.status !==s201) return this.$message.error('添加用户失败')
             this.$message.success('添加用户成功')
             this.addDialogVisible = false
         },
@@ -233,7 +233,7 @@ export default {
             const { data: res } = await this.$http.get('users/' + id)
             // console.log(res)
             if(res.meta.status !== 200) {
-                return this.$message.erro('查询用户信息失败')
+                return this.$message.error('查询用户信息失败')
             }
             this.userEditForm = res.data
             this.userEditDialogVisible = true
@@ -241,6 +241,25 @@ export default {
         //关闭用户修改对话框
         userEditDialogClosed() {
             this.$refs.userEditFormRef.resetFields()
+        },
+        //修改用户信息
+        async userEditInfo(id) {
+            //表单预验证
+            this.$refs.userEditFormRef.validate(valid => {
+                if(!valid) return              
+            })
+            //校验通过可以发起修改用户的http请求
+            const { data: res } = await this.$http.put('users/' + id, {
+                email: this.userEditForm.email,
+                mobile: this.userEditForm.mobile
+
+            } )
+            if(res.meta.status !==201) return this.$message.error('修改用户信息失败')
+            this.$message.success('修改用户信息成功')
+            //关闭修改用户信息对话框
+            this.userEditDialogVisible = false
+            //重新获取用户信息,以更新最新数据
+            this.getUsersList()
         }
 
     },
