@@ -18,7 +18,7 @@
                 //展开列
                 <el-table-column type="expand">
                     <template slot-scope="scope">
-                        <el-row :class="['bdbottom', index1 == 0 ? 'bdtop' : '']" v-for="(item1, index1) in scope.row.children" :key="item1.id">
+                        <el-row :class="['bdbottom', index1 == 0 ? 'bdtop' : '', 'vcenter']" v-for="(item1, index1) in scope.row.children" :key="item1.id">
                             <!-- 一级权限 -->
                             <el-col :span="5">
                                 <el-tag>{{ item1.authName }}</el-tag>
@@ -26,7 +26,7 @@
                             </el-col>
                             <!-- 二级、三级权限 -->
                             <el-col :span="19">
-                                <el-row  :class="[index2 == 0 ? '' : 'bdtop']" v-for="(item2, index2) in item1.children" :key="item2.id">
+                                <el-row  :class="[index2 == 0 ? '' : 'bdtop', 'vcenter']" v-for="(item2, index2) in item1.children" :key="item2.id">
                                     <el-col :span="9">
                                         <el-tag type="warning">
                                             {{ item2.authName }}
@@ -69,7 +69,7 @@ export default {
     methods: {
         async getRolesList() {
             const { data: res } = await this.$http.get('roles')
-            console.log(res.data)
+            // console.log(res.data)
             if(res.meta.status !== 200) return this.$message.error('获取角色列表失败！')
             this.rolesList = res.data
             this.$message.success('获取角色列表成功')
@@ -92,5 +92,11 @@ export default {
 
 .bdbottom {
     border-bottom: 1px solid #eee;
+}
+
+//垂直方向居中对齐，谁想要此效果，绑定该类即可
+.vcenter {
+    display: flex;
+    align-items: center;
 }
 </style>

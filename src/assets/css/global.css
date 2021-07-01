@@ -2,6 +2,8 @@ html,body,#app {
     height: 100%;
     margin: 0;
     padding: 0;
+    /*设置最小宽度，这样在调节浏览器窗口大小时，页面不会因宽度不够被挤压变形*/
+    min-width: 1366px;
 }
 
 .el-breadcrumb {
