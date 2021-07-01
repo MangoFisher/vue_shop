@@ -51,11 +51,23 @@
                     <template slot-scope="scope">
                         <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="roleDeleteById(scope.row.id)">删除</el-button>
-                        <el-button type="warning" icon="el-icon-setting" size="mini">分配权限</el-button>
+                        <el-button type="warning" icon="el-icon-setting" size="mini" @click="showRolesEditDialog">分配权限</el-button>
                     </template>
                 </el-table-column>
             </el-table>
         </el-card>
+        <!-- 分配权限对话框 -->
+        <el-dialog
+            title="分配权限对话框"
+            :visible.sync="roleEditDialogVisible"
+            width="30%"
+            >
+            <span>这是一段信息</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="roleEditDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="roleEditDialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -63,7 +75,8 @@
 export default {
     data() {
         return {
-            rolesList: []
+            rolesList: [],
+            roleEditDialogVisible: false
         }
     },
     methods: {
@@ -87,6 +100,12 @@ export default {
             if(result.meta.status !== 200) return this.$message.error('角色删除失败！')
             this.$message.success('角色删除成功！')
             this.getRolesList()
+        },
+        //分配权限对话框
+        async showRolesEditDialog() {
+            this.roleEditDialogVisible = true
+            const { data: res } = await this.$http.get('rights/tree')
+            console.log(res)
         }
 
     },
