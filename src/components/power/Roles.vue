@@ -61,6 +61,7 @@
             title="分配权限对话框"
             :visible.sync="roleEditDialogVisible"
             width="30%"
+            @close="rolesEditDialogClosed"
             >
             <el-tree :data="rightsList" :props="rightsProps" :show-checkbox="true" node-key="id" :default-expand-all="true" :default-checked-keys="defKeys"></el-tree>
             <span slot="footer" class="dialog-footer">
@@ -119,7 +120,7 @@ export default {
             this.$message.success('获取权限树形数据成功')
             //获取拥有权限的id
             this.getLeafKeys(role, this.defKeys)
-            console.log(this.defKeys)
+            // console.log(this.defKeys)
             this.roleEditDialogVisible = true
 
         },
@@ -131,6 +132,10 @@ export default {
             node.children.forEach(item => {
                 this.getLeafKeys(item, arr)
             });
+        },
+        //关闭权限分配对话框
+        rolesEditDialogClosed() {
+            this.defKeys = []
         }
 
     },
