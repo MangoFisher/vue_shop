@@ -76,7 +76,8 @@ export default {
     data() {
         return {
             rolesList: [],
-            roleEditDialogVisible: false
+            roleEditDialogVisible: false,
+            rightsList: []
         }
     },
     methods: {
@@ -105,7 +106,11 @@ export default {
         async showRolesEditDialog() {
             this.roleEditDialogVisible = true
             const { data: res } = await this.$http.get('rights/tree')
-            console.log(res)
+            // console.log(res)
+            if(res.meta.status !== 200) return this.$message.error('获取权限树形数据失败')
+            this.rightsList = res.data
+            this.$message.success('获取权限树形数据成功')
+
         }
 
     },
