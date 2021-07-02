@@ -51,7 +51,7 @@
                     <template slot-scope="scope">
                         <el-button type="primary" icon="el-icon-edit" size="mini">编辑</el-button>
                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="roleDeleteById(scope.row.id)">删除</el-button>
-                        <el-button type="warning" icon="el-icon-setting" size="mini" @click="showRolesEditDialog">分配权限</el-button>
+                        <el-button type="warning" icon="el-icon-setting" size="mini" @click="showRolesEditDialog(scope.row)">分配权限</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -62,7 +62,7 @@
             :visible.sync="roleEditDialogVisible"
             width="30%"
             >
-            <el-tree :data="rightsList" :props="rightsProps" :show-checkbox="true" node-key="id1" :default-expand-all="true"></el-tree>
+            <el-tree :data="rightsList" :props="rightsProps" :show-checkbox="true" node-key="id" :default-expand-all="true" :default-checked-keys="defKeys"></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="roleEditDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="roleEditDialogVisible = false">确 定</el-button>
@@ -76,12 +76,15 @@ export default {
     data() {
         return {
             rolesList: [],
+            //控制分配权限对话框是否可见
             roleEditDialogVisible: false,
             rightsList: [],
             rightsProps: {
                 label: 'authName',
                 children: 'children'
-            }
+            },
+            //权限tree结构中，默认选中的权限列表    
+            defKeys: []
         }
     },
     methods: {
@@ -107,14 +110,27 @@ export default {
             this.getRolesList()
         },
         //分配权限对话框
-        async showRolesEditDialog() {
-            this.roleEditDialogVisible = true
+        async showRolesEditDialog(role) {
+            
             const { data: res } = await this.$http.get('rights/tree')
             // console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取权限树形数据失败')
             this.rightsList = res.data
             this.$message.success('获取权限树形数据成功')
+            //获取拥有权限的id
+            this.getLeafKeys(role, this.defKeys)
+            console.log(this.defKeys)
+            this.roleEditDialogVisible = true
 
+        },
+        //通过递归的形式，获取角色下所有三级权限的id，并保存到defKeys中
+        getLeafKeys(node, arr) {
+            if(!node.children) {
+                return arr.push(node.id)
+            }
+            node.children.forEach(item => {
+                this.getLeafKeys(item, arr)
+            });
         }
 
     },
