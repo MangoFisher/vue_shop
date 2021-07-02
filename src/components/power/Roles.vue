@@ -62,7 +62,7 @@
             :visible.sync="roleEditDialogVisible"
             width="30%"
             >
-            <el-tree :data="rightsList" :props="rightsProps"></el-tree>
+            <el-tree :data="rightsList" :props="rightsProps" :show-checkbox="true" node-key="id1" :default-expand-all="true"></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="roleEditDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="roleEditDialogVisible = false">确 定</el-button>
