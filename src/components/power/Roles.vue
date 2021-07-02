@@ -62,7 +62,7 @@
             :visible.sync="roleEditDialogVisible"
             width="30%"
             >
-            <span>这是一段信息</span>
+            <el-tree :data="rightsList" :props="rightsProps"></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="roleEditDialogVisible = false">取 消</el-button>
                 <el-button type="primary" @click="roleEditDialogVisible = false">确 定</el-button>
@@ -77,7 +77,11 @@ export default {
         return {
             rolesList: [],
             roleEditDialogVisible: false,
-            rightsList: []
+            rightsList: [],
+            rightsProps: {
+                label: 'authName',
+                children: 'children'
+            }
         }
     },
     methods: {
