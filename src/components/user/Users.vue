@@ -126,7 +126,7 @@
             </div>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="setRoleDialogVisible = false">取 消</el-button>
-                <el-button type="primary">确 定</el-button>
+                <el-button type="primary" @click="savaRoleInfo(userInfo.id)">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -314,14 +314,26 @@ export default {
         //展示分配角色对话框
         async setRole(userInfo) {
             this.userInfo = userInfo
-            console.log(this.userInfo)
+            // console.log(this.userInfo)
             //在展示对话框之前，获取所有角色列表
             const { data: res } = await this.$http.get('roles')
             if(res.meta.status !== 200) return this.$message.error('获取所有角色数据失败')
             this.rolesList = res.data
-            console.log(this.rolesList)
+            // console.log(this.rolesList)
 
             this.setRoleDialogVisible = true
+        },
+        //保存为用户分配的权限
+        async savaRoleInfo(id) {
+            // console.log(this.selectedRoleId)
+            // console.log(id)
+            const { data: res } = await this.$http.put(`users/${id}/role`,{rid: this.selectedRoleId})
+            // console.log(res)
+            //关闭分配角色对话框
+            this.setRoleDialogVisible = false
+            //刷新当用户页面
+            this.getUsersList()
+
         }   
 
     },  
