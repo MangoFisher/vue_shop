@@ -63,10 +63,10 @@
             width="30%"
             @close="rolesEditDialogClosed"
             >
-            <el-tree :data="rightsList" :props="rightsProps" :show-checkbox="true" node-key="id" :default-expand-all="true" :default-checked-keys="defKeys"></el-tree>
+            <el-tree ref="treeRef" :data="rightsList" :props="rightsProps" :show-checkbox="true" node-key="id" :default-expand-all="true" :default-checked-keys="defKeys"></el-tree>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="roleEditDialogVisible = false">取 消</el-button>
-                <el-button type="primary" @click="roleEditDialogVisible = false">确 定</el-button>
+                <el-button type="primary" @click="allotRights">确 定</el-button>
             </span>
         </el-dialog>
     </div>
@@ -85,7 +85,8 @@ export default {
                 children: 'children'
             },
             //权限tree结构中，默认选中的权限列表    
-            defKeys: []
+            defKeys: [],
+            roleId: ''
         }
     },
     methods: {
@@ -112,7 +113,7 @@ export default {
         },
         //分配权限对话框
         async showRolesEditDialog(role) {
-            
+            this.roleId = role.id
             const { data: res } = await this.$http.get('rights/tree')
             // console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取权限树形数据失败')
@@ -136,6 +137,27 @@ export default {
         //关闭权限分配对话框
         rolesEditDialogClosed() {
             this.defKeys = []
+        },
+        //点击为角色分配权限
+        async allotRights() {
+            const keys = [
+                //展开运算符
+                ...this.$refs.treeRef.getCheckedKeys(),
+                ...this.$refs.treeRef.getHalfCheckedKeys()
+            ]
+            // console.log(keys)
+            const idStr = keys.join(',')
+            console.log(idStr)
+            //为了能在字符串中使用变量，必须使用反义字符（而不是单引号！！！！）
+            const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, {
+                rids:idStr
+            })
+            // console.log(res)
+            if(res.meta.status !== 200) return this.$message.error('给该角色分配权限失败！')
+            this.$message.success('给该角色分配权限成功')
+            this.roleEditDialogVisible = false
+
+
         }
 
     },
