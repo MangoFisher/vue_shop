@@ -13,13 +13,15 @@
                      <el-button type="primary">添加分类</el-button>
                  </el-col>
              </el-row>
-             <tree-table :data="cateList" 
+             <tree-table class="treeTable"
+                         :data="cateList" 
                          :columns="columns" 
                          :selection-type="false" 
                          :expand-type="false" 
                          :show-index="true" 
                          index-text="#" 
-                         :border="true">
+                         :border="true"
+                         >
                          <!-- 定义名叫'isok'的模版 -->
                          <template slot="isok" slot-scope="scope">
                              <i class="el-icon-success" v-if="scope.row.cat_deleted == false" style="color:lightgreen;"></i>
@@ -40,7 +42,7 @@
 
 
              <!-- 分页区域 -->
-            <!-- <el-pagination
+            <el-pagination
                 @size-change="handleSizeChange"
                 @current-change="handleCurrentChange"
                 :current-page="queryInfo.pagenum"
@@ -48,7 +50,7 @@
                 :page-size="queryInfo.pagesize"
                 layout="total, sizes, prev, pager, next, jumper"
                 :total="total">
-            </el-pagination> -->
+            </el-pagination>
          </el-card>
     </div>
 </template>
@@ -61,7 +63,7 @@ export default {
             cateList: [],
             //商品分类数据总条目数
             total: 0,
-            queryInfor: {
+            queryInfo: {
                 type: 3,
                 pagenum: 1,
                 pagesize: 5
@@ -97,11 +99,22 @@ export default {
         //获取商品分类数据
         async getCateList() {
             const { data: res } = await this.$http.get('categories', { params: this.queryInfo })
-            // console.log(res)
+            console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取商品分类数据失败')
-            this.cateList = res.data
+            this.cateList = res.data.result
+            console.log(this.cateList)
             this.total = res.data.total
             console.log(this.total)
+        },
+        //监听pagesize发生变化
+        handleSizeChange(newSize) {
+            this.queryInfo.pagesize = newSize
+            this.getCateList()
+        },
+        //监听pagenum发生变化
+        handleCurrentChange(newPage) {
+            this.queryInfo.pagenum = newPage
+            this.getCateList()
         }
     },
     created(){
@@ -111,5 +124,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.treeTable {
+    margin-top: 15px;
+}
 </style>
