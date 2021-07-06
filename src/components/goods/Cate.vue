@@ -10,7 +10,7 @@
          <el-card>
              <el-row>
                  <el-col>
-                     <el-button type="primary">添加分类</el-button>
+                     <el-button type="primary" @click="showAddCateDialog">添加分类</el-button>
                  </el-col>
              </el-row>
              <tree-table class="treeTable"
@@ -39,7 +39,32 @@
                               <el-button type="danger" icon="el-icon-delete" size="mini" ></el-button>
                          </template>
              </tree-table>
-
+             <!-- 添加商品分类对话框 -->
+            <el-dialog title="添加商品分类对话框"
+                        :visible.sync="addCateVisible"
+                        width="30%"
+                        @close="addCateClose">
+                <el-form :model="addCateForm" :rules="addCateFormRules" ref="addCateFormRef" label-width="100px" class="demo-ruleForm">
+                    <el-form-item label="分类名称" prop="cat_name">
+                        <el-input v-model="addCateForm.cat_name"></el-input>
+                    </el-form-item>
+                    <el-form-item label="父级分类" >
+                        <el-cascader
+                            v-model="selectedValue"
+                            :options="cascaderList"
+                            :props="cascaderProps"
+                            @change="cascaderChanged"
+                            size="mini"
+                            clearable
+                            >
+                        </el-cascader>
+                    </el-form-item>
+                </el-form>
+                <span slot="footer" class="dialog-footer">
+                <el-button @click="addCateVisible = false">取 消</el-button>
+                <el-button type="primary" @click="addCate">确 定</el-button>
+            </span>
+            </el-dialog>
 
              <!-- 分页区域 -->
             <el-pagination
@@ -67,6 +92,28 @@ export default {
                 type: 3,
                 pagenum: 1,
                 pagesize: 5
+            },
+            //添加商品分类数据结构
+            addCateForm: {
+                cat_pid: 0,
+                cat_name: '',
+                cat_level: 0
+            },
+            addCateFormRules: {
+                cat_name: [{required: true, message: '请输入分类名称', trigger: 'blur' }]
+            },
+            //控制添加分类对话框是否显示
+            addCateVisible: false,
+            //父级分类级联菜单选项数据
+            cascaderList: [],
+            //父级分类级联菜单被选中的选项
+            selectedValue: [],
+            cascaderProps: {
+                expandTrigger:'hover',
+                value: 'cat_id',
+                label: 'cat_name',
+                children: 'children',
+                checkStrictly: true
             },
             //为TreeTable设定列
             columns: [
@@ -99,12 +146,12 @@ export default {
         //获取商品分类数据
         async getCateList() {
             const { data: res } = await this.$http.get('categories', { params: this.queryInfo })
-            console.log(res)
+            // console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取商品分类数据失败')
             this.cateList = res.data.result
-            console.log(this.cateList)
+            // console.log(this.cateList)
             this.total = res.data.total
-            console.log(this.total)
+            // console.log(this.total)
         },
         //监听pagesize发生变化
         handleSizeChange(newSize) {
@@ -115,6 +162,38 @@ export default {
         handleCurrentChange(newPage) {
             this.queryInfo.pagenum = newPage
             this.getCateList()
+        },
+        //添加商品分类
+        async addCate() {
+            const { data: res } = await this.$http.post('categories', this.addCateForm)
+            // console.log(res)
+            if(res.meta.status !== 201) return this.$message.error('增加商品分类出错')
+            this.addCateVisible = false
+            this.getCateList()
+        },
+        //展示添加商品分配对话框
+        async showAddCateDialog() {
+            //获取前2级商品分类数据
+            const { data: res } = await this.$http.get('categories', { params: {type:2}})
+            if(res.meta.status !== 200) return this.$message.error('获取父级分类级联数据失败')
+            // console.log(res)
+            this.cascaderList = res.data
+            this.addCateVisible = true
+        },
+        //父级分类级联菜单发生变化
+        cascaderChanged() {
+            // console.log('in function cascaderChanged')
+            // console.log(this.selectedValue)
+            if(this.selectedValue.length > 0) {
+                this.addCateForm.cat_pid = this.selectedValue[this.selectedValue.length - 1]
+                this.addCateForm.cat_level = this.selectedValue.length
+            }
+        },
+        //添加商品分类对话框的关闭事件
+        addCateClose(){
+            //对表单进行重置
+            this.$refs.addCateFormRef.resetFields()
+            this.selectedValue = []
         }
     },
     created(){
