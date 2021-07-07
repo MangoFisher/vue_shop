@@ -31,6 +31,16 @@
                         </el-cascader>
                 </el-col>
             </el-row>
+            <!-- tab页面区域 -->
+            <el-tabs v-model="activeName" @tab-click="tabClick">
+                <el-tab-pane label="动态参数" name="many">
+                    <el-button type="primary" size="mini" :disabled="selectedValue.length !== 3">添加参数</el-button>
+                </el-tab-pane>
+                <el-tab-pane label="静态属性" name="only">
+                    <el-button type="primary" size="mini" :disabled="selectedValue.length !== 3">添加属性</el-button>
+                </el-tab-pane>
+                
+            </el-tabs>
         </el-card>
     </div>
 </template>
@@ -48,7 +58,9 @@ export default {
                 label: 'cat_name',
                 children: 'children',
                 // checkStrictly: true
-            }
+            },
+            //tab标签页区域被选中的页面名称
+            activeName: 'many'
         }
     },
     methods: {
@@ -59,13 +71,21 @@ export default {
             this.cateList = res.data
         },
         //级联选择器发生变化
-        cascaderChanged() {
+        async cascaderChanged() {
             //如果选中的不是三级菜单，则通过将selectedValue置空的方式，让一级、二级菜单无法被选中
             if(this.selectedValue.length !== 3) {
                 this.selectedValue = []
                 return
             }
-        }
+            
+            const { data: res } = await this.$http.get(`categories/${this.selectedValue[2]}/attributes`, {params: {
+                sel: this.activeName
+            }})
+            // console.log(res)
+            if(res.meta.status !== 200) return this.$message.error('获取商品分类参数(属性)出错')
+        },
+        //tab页面点击事件
+        tabClick() {}
     },
     
     created() {
