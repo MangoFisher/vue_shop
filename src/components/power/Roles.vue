@@ -147,7 +147,7 @@ export default {
             ]
             // console.log(keys)
             const idStr = keys.join(',')
-            console.log(idStr)
+            // console.log(idStr)
             //为了能在字符串中使用变量，必须使用反义字符（而不是单引号！！！！）
             const { data: res } = await this.$http.post(`roles/${this.roleId}/rights`, {
                 rids:idStr

@@ -50,6 +50,7 @@ export default {
     data() {
         return {
             cateList: [],
+            paramsData: [],
             //级联选择器选中的数据
             selectedValue: [],
             cascaderProps: {
@@ -70,22 +71,32 @@ export default {
             if(res.meta.status !== 200) return this.$message.error('获取商品分类信息数据出错')
             this.cateList = res.data
         },
-        //级联选择器发生变化
-        async cascaderChanged() {
-            //如果选中的不是三级菜单，则通过将selectedValue置空的方式，让一级、二级菜单无法被选中
-            if(this.selectedValue.length !== 3) {
-                this.selectedValue = []
-                return
-            }
-            
+        async getParamsData() {
+            // console.log(this.activeName)
             const { data: res } = await this.$http.get(`categories/${this.selectedValue[2]}/attributes`, {params: {
                 sel: this.activeName
             }})
             // console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取商品分类参数(属性)出错')
+            this.paramsData = res.data
+        },
+        //级联选择器发生变化
+        cascaderChanged() {
+            //如果选中的不是三级菜单，则通过将selectedValue置空的方式，让一级、二级菜单无法被选中
+            if(this.selectedValue.length !== 3) {
+                this.selectedValue = []
+                return
+            }
+            this.getParamsData()
         },
         //tab页面点击事件
-        tabClick() {}
+        tabClick() {
+            // console.log(this.activeName)
+            if(this.selectedValue.length !== 3) return
+
+            this.getParamsData()
+            // console.log(this.paramsData)
+        }
     },
     
     created() {
