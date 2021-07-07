@@ -60,7 +60,11 @@ export default {
         },
         //级联选择器发生变化
         cascaderChanged() {
-
+            //如果选中的不是三级菜单，则通过将selectedValue置空的方式，让一级、二级菜单无法被选中
+            if(this.selectedValue.length !== 3) {
+                this.selectedValue = []
+                return
+            }
         }
     },
     
