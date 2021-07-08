@@ -76,7 +76,7 @@
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="addDialogVisible = false">取消</el-button>
-                <el-button @click="addDialogVisible = false">确定</el-button>
+                <el-button @click="addParams">确定</el-button>
 
             </span>
 
@@ -148,6 +148,18 @@ export default {
         },
         addParamsDialogClosed() {
             this.$refs.addParamsFormRef.resetFields()
+        },
+        addParams() {
+            this.$refs.addParamsFormRef.validate(async valid => {
+                if(!valid) return 
+                const { data: res} = await this.$http.post(`categories/${this.selectedValue[2]}/attributes`, {
+                    attr_name: this.addParamsForm.attr_name,
+                    attr_sel: this.activeName
+                })
+                if(res.meta.status !== 201) return this.$message.error('添加参数失败')
+                // console.log(res)
+                this.addDialogVisible = false
+            })
         }
         
     },
