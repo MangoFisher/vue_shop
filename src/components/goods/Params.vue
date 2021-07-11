@@ -183,7 +183,7 @@ export default {
                 item.inputVisible = false
                 item.inputValue = ''
             })
-            console.log(res)
+            // console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取商品分类参数(属性)出错')
             if(this.activeName == 'many') this.manyTableData = res.data
             if(this.activeName == 'only') this.onlyTableData = res.data
@@ -266,7 +266,7 @@ export default {
             this.getParamsData()
         },
         showInput(row) {
-            console.log('in function showInput')
+            // console.log('in function showInput')
             row.inputVisible = true
             //让文本框自动获得焦点
             //nextTick方法的作用，就是页面上的元素被重新渲染后，才会执行回调函数中的代码
@@ -274,7 +274,7 @@ export default {
             this.$refs.saveTagInput.$refs.input.focus();
         });
         },
-        handleInputConfirm(row) {
+        async handleInputConfirm(row) {
             // console.log(row)
             //校验输入是否合法，如果不合法则清空
             if(row.inputValue.trim().length == 0) {
@@ -282,6 +282,17 @@ export default {
                 row.inputVisible = false
                 return
             }
+            //校验合法，则进一步处理
+            row.attr_vals.push(row.inputValue.trim())
+            row.inputValue = ''
+            row.inputVisible = false
+            //需要发起http请求，保存新增的数据
+            const { data: res } = await this.$http.put(`categories/${this.selectedValue[2]}/attributes/${row.attr_id}`, {
+                attr_name: row.attr_name,
+                attr_sel: row.attr_sel,
+                attr_vals: row.attr_vals.join(' ')
+            })
+            if(res.meta.status !== 200) return this.$message.error('更新商品分类参数错误')
            
         }
         
