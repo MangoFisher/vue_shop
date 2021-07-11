@@ -42,14 +42,14 @@
                                 <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
                                 <el-input
                                     class="input-new-tag"
-                                    v-if="inputVisible"
-                                    v-model="inputValue"
+                                    v-if="scope.row.inputVisible"
+                                    v-model="scope.row.inputValue"
                                     ref="saveTagInput"
                                     size="small"
                                     @keyup.enter.native="handleInputConfirm"
                                     @blur="handleInputConfirm">
-                            </el-input>
-                            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                                </el-input>
+                                <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
                             </template>
                             
                         </el-table-column>
@@ -72,14 +72,14 @@
                                 <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
                                 <el-input
                                     class="input-new-tag"
-                                    v-if="inputVisible"
-                                    v-model="inputValue"
+                                    v-if="scope.row.inputVisible"
+                                    v-model="scope.row.inputValue"
                                     ref="saveTagInput"
                                     size="small"
                                     @keyup.enter.native="handleInputConfirm"
                                     @blur="handleInputConfirm">
-                            </el-input>
-                            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                                </el-input>
+                                <el-button v-else class="button-new-tag" size="small" @click="showInput(scope.row)">+ New Tag</el-button>
                             </template>
                         </el-table-column>
                         
@@ -160,9 +160,8 @@ export default {
             },
             editParamsFormRules: {
                 attr_name: [{required: true, message: '请输入参数名称', trigger: 'blur'}]
-            },
-            inputVisible: false,
-            inputValue: '',
+            }
+            
 
         }
     },
@@ -178,11 +177,13 @@ export default {
             const { data: res } = await this.$http.get(`categories/${this.selectedValue[2]}/attributes`, {params: {
                 sel: this.activeName
             }})
-            console.log(res)
+            // console.log(res)
             res.data.forEach(item => {
                 item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
+                item.inputVisible = false
+                item.inputValue = ''
             })
-            // console.log(res)
+            console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取商品分类参数(属性)出错')
             if(this.activeName == 'many') this.manyTableData = res.data
             if(this.activeName == 'only') this.onlyTableData = res.data
@@ -264,8 +265,9 @@ export default {
             if(result.meta.status !== 200) return this.$message.error('商品分类参数删除失败')
             this.getParamsData()
         },
-        showInput() {
-            this.inputVisible = true
+        showInput(row) {
+            console.log('in function showInput')
+            row.inputVisible = true
         },
         handleInputConfirm() {
             this.inputVisible = false
