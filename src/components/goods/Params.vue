@@ -268,6 +268,11 @@ export default {
         showInput(row) {
             console.log('in function showInput')
             row.inputVisible = true
+            //让文本框自动获得焦点
+            //nextTick方法的作用，就是页面上的元素被重新渲染后，才会执行回调函数中的代码
+            this.$nextTick(_ => {
+            this.$refs.saveTagInput.$refs.input.focus();
+        });
         },
         handleInputConfirm() {
             this.inputVisible = false
