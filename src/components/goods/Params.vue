@@ -43,7 +43,7 @@
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
-                                <el-button type="danger" icon="el-icon-delete">删除</el-button>
+                                <el-button type="danger" icon="el-icon-delete" @click="paramsDelete(scope.row.attr_id)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -58,7 +58,7 @@
                         <el-table-column label="操作">
                             <template slot-scope="scope">
                                 <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
-                                <el-button type="danger" icon="el-icon-delete">删除</el-button>
+                                <el-button type="danger" icon="el-icon-delete" @click="paramsDelete(scope.row.attr_id)">删除</el-button>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -213,6 +213,19 @@ export default {
             this.editParamsForm = res.data
             // console.log(res)
             this.editDialogVisible = true
+        },
+        async paramsDelete(attr_id) {
+            const res = await this.$confirm('此操作将删除该角色信息, 是否继续?', '提示', {
+                                            confirmButtonText: '确定',
+                                            cancelButtonText: '取消',
+                                            type: 'warning'
+                                            }).catch((err) => {
+                                                return err
+                                            })
+            if('confirm' !== res) return this.$message.info('用户取消删除！')
+            const { data: result } = await this.$http.delete(`categories/${this.selectedValue[2]}/attributes/${attr_id}`)
+            if(result.meta.status !== 200) return this.$message.error('商品分类参数删除失败')
+            this.getParamsData()
         }
         
     },
