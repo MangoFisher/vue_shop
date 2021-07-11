@@ -37,7 +37,11 @@
                     <el-button type="primary" size="mini" :disabled="selectedValue.length !== 3" @click="addDialogVisible = true">添加参数</el-button>
                     <!-- 动态参数表格 -->
                     <el-table :data="manyTableData" border stripe>
-                        <el-table-column type="expand"></el-table-column>
+                        <el-table-column type="expand">
+                            <template slot-scope="scope">
+                                <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column type="index"></el-table-column>
                         <el-table-column label="参数名称" prop="attr_name"></el-table-column>
                         <el-table-column label="操作">
@@ -145,6 +149,10 @@ export default {
             const { data: res } = await this.$http.get(`categories/${this.selectedValue[2]}/attributes`, {params: {
                 sel: this.activeName
             }})
+            console.log(res)
+            res.data.forEach(item => {
+                item.attr_vals = item.attr_vals ? item.attr_vals.split(',') : []
+            })
             // console.log(res)
             if(res.meta.status !== 200) return this.$message.error('获取商品分类参数(属性)出错')
             if(this.activeName == 'many') this.manyTableData = res.data
