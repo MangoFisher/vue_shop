@@ -39,7 +39,7 @@
                     <el-table :data="manyTableData" border stripe>
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
+                                <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable @close="handlClose(i, scope.row)">{{ item }}</el-tag>
                                 <el-input
                                     class="input-new-tag"
                                     v-if="scope.row.inputVisible"
@@ -69,7 +69,7 @@
                     <el-table :data="onlyTableData" border stripe>
                         <el-table-column type="expand">
                             <template slot-scope="scope">
-                                <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
+                                <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable @close="handlClose(i, scope.row)">{{ item }}</el-tag>
                                 <el-input
                                     class="input-new-tag"
                                     v-if="scope.row.inputVisible"
@@ -287,13 +287,20 @@ export default {
             row.inputValue = ''
             row.inputVisible = false
             //需要发起http请求，保存新增的数据
+            this.saveAttrValues(row)
+           
+        },
+        async saveAttrValues(row) {
             const { data: res } = await this.$http.put(`categories/${this.selectedValue[2]}/attributes/${row.attr_id}`, {
                 attr_name: row.attr_name,
                 attr_sel: row.attr_sel,
                 attr_vals: row.attr_vals.join(' ')
             })
             if(res.meta.status !== 200) return this.$message.error('更新商品分类参数错误')
-           
+        },
+        handlClose(i, row) {
+            row.attr_vals.splice(i , 1)
+            this.saveAttrValues(row)
         }
         
     },
