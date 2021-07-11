@@ -42,7 +42,7 @@
                         <el-table-column label="参数名称" prop="attr_name"></el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button type="primary" icon="el-icon-edit">编辑</el-button>
+                                <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
                                 <el-button type="danger" icon="el-icon-delete">删除</el-button>
                             </template>
                         </el-table-column>
@@ -57,7 +57,7 @@
                         <el-table-column label="属性名称" prop="attr_name"></el-table-column>
                         <el-table-column label="操作">
                             <template slot-scope="scope">
-                                <el-button type="primary" icon="el-icon-edit">编辑</el-button>
+                                <el-button type="primary" icon="el-icon-edit" @click="showEditDialog(scope.row.attr_id)">编辑</el-button>
                                 <el-button type="danger" icon="el-icon-delete">删除</el-button>
                             </template>
                         </el-table-column>
@@ -79,7 +79,21 @@
                 <el-button @click="addParams">确定</el-button>
 
             </span>
-
+        </el-dialog>
+        <!-- 修改参数的对话框 -->
+        <el-dialog :title="'修改' + titleText"
+                   :visible.sync="editDialogVisible" 
+                   width="50%" 
+                   @close="editParamsDialogClosed">
+            <el-form :model="editParamsForm" :rules="editParamsFormRules" ref="editParamsFormRef" label-width="100px" class="demo-ruleForm">  
+                    <el-form-item :label="titleText">
+                            <el-input v-model="editParamsForm.attr_name"></el-input>
+                    </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editDialogVisible = false">取消</el-button>
+                <el-button @click="editParams">确定</el-button>
+            </span>
         </el-dialog>
     </div>
 </template>
@@ -108,6 +122,13 @@ export default {
                 attr_name: ''
             },
             addParamsFormRules: {
+                attr_name: [{required: true, message: '请输入参数名称', trigger: 'blur'}]
+            },
+            editDialogVisible: false,
+            editParamsForm: {
+                attr_name: ''
+            },
+            editParamsFormRules: {
                 attr_name: [{required: true, message: '请输入参数名称', trigger: 'blur'}]
             }
         }
@@ -159,7 +180,39 @@ export default {
                 if(res.meta.status !== 201) return this.$message.error('添加参数失败')
                 // console.log(res)
                 this.addDialogVisible = false
+                this.getParamsData()
             })
+        },
+        editParamsDialogClosed() {
+            this.$refs.editParamsFormRef.resetFields()
+        },
+        editParams() {
+            this.$refs.editParamsFormRef.validate(async valid => {
+                if(!valid) return
+                const data = await this.$http.put(`categories/${this.selectedValue[2]}/attributes/${this.editParamsForm.attr_id}`, {
+                    
+                    attr_name: this.editParamsForm.attr_name,
+                    attr_sel: this.activeName
+                    
+                    })
+                // console.log(data)
+                if(data.meta.status !== 200) return this.$message.error('修改商品分类参数失败')
+                
+            })
+            this.editDialogVisible = false
+            this.getParamsData()
+            
+        },
+        async showEditDialog(attr_id) {
+            const { data: res } = await this.$http.get(`categories/${this.selectedValue[2]}/attributes/${attr_id}`, {
+                params: {
+                    attr_sel: this.activeName
+                }
+            })
+            if(res.meta.status !== 200) return this.$message.error('获取参数信息失败')
+            this.editParamsForm = res.data
+            // console.log(res)
+            this.editDialogVisible = true
         }
         
     },
