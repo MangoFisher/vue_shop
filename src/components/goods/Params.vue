@@ -40,7 +40,18 @@
                         <el-table-column type="expand">
                             <template slot-scope="scope">
                                 <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
+                                <el-input
+                                    class="input-new-tag"
+                                    v-if="inputVisible"
+                                    v-model="inputValue"
+                                    ref="saveTagInput"
+                                    size="small"
+                                    @keyup.enter.native="handleInputConfirm"
+                                    @blur="handleInputConfirm">
+                            </el-input>
+                            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
                             </template>
+                            
                         </el-table-column>
                         <el-table-column type="index"></el-table-column>
                         <el-table-column label="参数名称" prop="attr_name"></el-table-column>
@@ -56,7 +67,22 @@
                     <el-button type="primary" size="mini" :disabled="selectedValue.length !== 3" @click="addDialogVisible = true">添加属性</el-button>
                     <!-- 静态参数表格 -->
                     <el-table :data="onlyTableData" border stripe>
-                        <el-table-column type="expand"></el-table-column>
+                        <el-table-column type="expand">
+                            <template slot-scope="scope">
+                                <el-tag v-for="(item, i) in scope.row.attr_vals" :key="i" closable="">{{ item }}</el-tag>
+                                <el-input
+                                    class="input-new-tag"
+                                    v-if="inputVisible"
+                                    v-model="inputValue"
+                                    ref="saveTagInput"
+                                    size="small"
+                                    @keyup.enter.native="handleInputConfirm"
+                                    @blur="handleInputConfirm">
+                            </el-input>
+                            <el-button v-else class="button-new-tag" size="small" @click="showInput">+ New Tag</el-button>
+                            </template>
+                        </el-table-column>
+                        
                         <el-table-column type="index"></el-table-column>
                         <el-table-column label="属性名称" prop="attr_name"></el-table-column>
                         <el-table-column label="操作">
@@ -134,7 +160,10 @@ export default {
             },
             editParamsFormRules: {
                 attr_name: [{required: true, message: '请输入参数名称', trigger: 'blur'}]
-            }
+            },
+            inputVisible: false,
+            inputValue: '',
+
         }
     },
     methods: {
@@ -234,6 +263,12 @@ export default {
             const { data: result } = await this.$http.delete(`categories/${this.selectedValue[2]}/attributes/${attr_id}`)
             if(result.meta.status !== 200) return this.$message.error('商品分类参数删除失败')
             this.getParamsData()
+        },
+        showInput() {
+            this.inputVisible = true
+        },
+        handleInputConfirm() {
+            this.inputVisible = false
         }
         
     },
@@ -256,6 +291,10 @@ export default {
 .cat_opt {
     margin: 15px 0;
 
+}
+
+.input-new-tag {
+    width: 120px;
 }
 
 
