@@ -44,7 +44,7 @@
                         <el-form-item label="商品分类">
                             <el-cascader
                                 class="cat_select"
-                                v-model="selectedValue"
+                                v-model="addForm.goods_cat"
                                 :options="cateList"
                                 :props="cascaderProps"
                                 @change="cascaderChanged"
@@ -98,11 +98,10 @@ export default {
                 expandTrigger:'hover',
                 value: 'cat_id',
                 label: 'cat_name',
-                children: 'children',
-                checkStrictly: true
+                children: 'children'
+                // checkStrictly: true
             },
-            //级联选择器选择的value
-            selectedValue: []
+           
 
         }
     },
@@ -115,7 +114,11 @@ export default {
             // console.log(this.cateList)
         },
         //级联选择器发生变化事件
-        cascaderChanged() {}
+        cascaderChanged() {
+            if(this.addForm.goods_cat.length !== 3) {
+                this.addForm.goods_cat = []
+            }
+        }
     },
     created() {
         this.getCateList()
