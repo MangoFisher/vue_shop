@@ -17,10 +17,13 @@
                 :closable="false">
             </el-alert>
             <!-- 步骤条 -->
-            <el-steps :space="200" :active="1" finish-status="success">
-                <el-step title="已完成"></el-step>
-                <el-step title="进行中"></el-step>
-                <el-step title="步骤 3"></el-step>
+            <el-steps :space="200" :active="activeIndex" finish-status="success" :align-center="true">
+                <el-step title="基本信息"></el-step>
+                <el-step title="商品参数"></el-step>
+                <el-step title="商品属性"></el-step>
+                <el-step title="商品图片"></el-step>
+                <el-step title="商品内容"></el-step>
+                <el-step title="完成"></el-step>
             </el-steps>
         </el-card>
     </div>
@@ -29,7 +32,10 @@
 <script>
 export default {
     data() {
-        return {}
+        return {
+            //步骤条中默认被激活的索引，索引从0开始
+            activeIndex: 0
+        }
     },
     methods: {},
     created() {
