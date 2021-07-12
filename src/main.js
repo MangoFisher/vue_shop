@@ -10,6 +10,19 @@ import axios from 'axios'
 Vue.prototype.$http = axios
 
 Vue.component('tree-table', TreeTable)
+//全局注册对时间进行格式化的过滤器
+Vue.filter('dateFormat', function(original) {
+  const dt = new Date(original)
+  const y = dt.getFullYear()
+  const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+  const d = (dt.getDate() + '').padStart(2, '0')
+
+  const hh = (dt.getHours() + '').padStart(2, '0')
+  const mm = (dt.getMinutes() + '').padStart(2, '0')
+  const ss = (dt.getSeconds() + '').padStart(2, '0')
+
+  return `${y}-${m}-${d} ${hh}:${mm}:${ss}`
+})
 
 //设置axios请求拦截器，在axios发起所有请求之前，将客户端记录的'token'字段的值，放置到请求的header中的Authorization字段中
 axios.interceptors.request.use(config => {
