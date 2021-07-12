@@ -40,7 +40,19 @@
                         </el-form-item>
                         <el-form-item label="商品数量" prop="goods_number">
                             <el-input v-model="addForm.goods_number" type="number"></el-input>
-                        </el-form-item>                       
+                        </el-form-item>
+                        <el-form-item label="商品分类">
+                            <el-cascader
+                                class="cat_select"
+                                v-model="selectedValue"
+                                :options="cateList"
+                                :props="cascaderProps"
+                                @change="cascaderChanged"
+                                size="mini"
+                                clearable
+                            >
+                            </el-cascader>
+                        </el-form-item>                        
                     </el-tab-pane>
                     <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
                     <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
@@ -79,13 +91,34 @@ export default {
                goods_number: [
                    {required: true, message: '请输入商品重量', trigger: 'blur'}
                ]
-            }
+            },
+            //商品分类数据
+            cateList: [],
+            cascaderProps: {
+                expandTrigger:'hover',
+                value: 'cat_id',
+                label: 'cat_name',
+                children: 'children',
+                checkStrictly: true
+            },
+            //级联选择器选择的value
+            selectedValue: []
 
         }
     },
-    methods: {},
+    methods: {
+        //获取商品分类数据
+        async getCateList() {
+            const { data: res } = await this.$http.get('categories')
+            if(res.meta.status !== 200) return this.$message.error('获取商品分类数据失败')
+            this.cateList = res.data
+            // console.log(this.cateList)
+        },
+        //级联选择器发生变化事件
+        cascaderChanged() {}
+    },
     created() {
-
+        this.getCateList()
     }
 }
 </script>
