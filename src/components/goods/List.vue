@@ -16,7 +16,7 @@
                     </el-input>
                 </el-col>
                 <el-col :span="4">
-                    <el-button type="primary" @click="addDialogVisible=true">添加商品</el-button>
+                    <el-button type="primary" @click="goAddPage">添加商品</el-button>
                 </el-col>
             </el-row>
             <!-- 用户列表区域 -->
@@ -102,6 +102,10 @@ export default {
         //自定义索引
         indexMethod(index) {
             return (this.queryInfo.pagenum - 1) * 10 + (index + 1)
+        },
+        //添加商品页面
+        goAddPage() {
+            this.$router.push('/goods/add')
         }
 
     },
