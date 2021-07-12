@@ -27,7 +27,7 @@
             </el-steps>
             <!-- tab栏区域 -->
             <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
-                <el-tabs v-model="activeIndex" tab-position="left">
+                <el-tabs v-model="activeIndex" tab-position="left" :before-leave="beforeTabLeave">
                     <el-tab-pane label="基本信息" name="0">
                         <el-form-item label="商品名称" prop="goods_name">
                             <el-input v-model="addForm.goods_name"></el-input>
@@ -76,6 +76,7 @@ export default {
                 goods_price: 0,
                 goods_weight: 0,
                 goods_number: 0,
+                goods_cat: []
 
             },
             addFormRules: {
@@ -117,6 +118,13 @@ export default {
         cascaderChanged() {
             if(this.addForm.goods_cat.length !== 3) {
                 this.addForm.goods_cat = []
+            }
+        },
+        beforeTabLeave(activeName, oldActiveName) {
+            //控制tabs是否可以切换
+            if(oldActiveName === '0' && this.addForm.goods_cat.length !== 3) {
+                this.$message.error('未选择商品分类')
+                return false
             }
         }
     },
