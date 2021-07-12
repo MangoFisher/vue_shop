@@ -31,3 +31,7 @@ html,body,#app {
 .el-step__title {
     font-size: 12px;
 }
+
+.el-tabs {
+    margin: 15px;
+}
