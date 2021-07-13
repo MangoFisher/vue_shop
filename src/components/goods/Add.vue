@@ -27,7 +27,7 @@
             </el-steps>
             <!-- tab栏区域 -->
             <el-form :model="addForm" :rules="addFormRules" ref="addFormRef" label-width="100px" label-position="top">
-                <el-tabs v-model="activeIndex" tab-position="left" :before-leave="beforeTabLeave">
+                <el-tabs v-model="activeIndex" tab-position="left" :before-leave="beforeTabLeave" @tab-click="tabClicked">
                     <el-tab-pane label="基本信息" name="0">
                         <el-form-item label="商品名称" prop="goods_name">
                             <el-input v-model="addForm.goods_name"></el-input>
@@ -54,7 +54,13 @@
                             </el-cascader>
                         </el-form-item>                        
                     </el-tab-pane>
-                    <el-tab-pane label="商品参数" name="1">商品参数</el-tab-pane>
+                    <el-tab-pane label="商品参数" name="1">
+                        <el-form-item :label="item.attr_name" v-for="item in manyTableData" :key="item.attr_id">
+                            <el-checkbox-group v-model="item.attr_vals">
+                                <el-checkbox :label="cb" v-for="(cb, i ) in item.attr_vals" :key="i" :border="true"></el-checkbox>
+                            </el-checkbox-group>
+                        </el-form-item>
+                    </el-tab-pane>
                     <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
                     <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
                     <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
@@ -102,6 +108,8 @@ export default {
                 children: 'children'
                 // checkStrictly: true
             },
+            //动态参数数据
+            manyTableData: []
            
 
         }
@@ -120,12 +128,36 @@ export default {
                 this.addForm.goods_cat = []
             }
         },
+        //tab标签页切换前钩子函数
         beforeTabLeave(activeName, oldActiveName) {
             //控制tabs是否可以切换
             if(oldActiveName === '0' && this.addForm.goods_cat.length !== 3) {
                 this.$message.error('未选择商品分类')
                 return false
             }
+        },
+        //tab标签栏被点击
+        async tabClicked() {
+            // console.log(this.activeIndex)
+            //点击的是商品参数页面，则发起获取商品参数的http请求
+            if(this.activeIndex == '1') {
+                const { data: res } = await this.$http.get(`categories/${this.cateID}/attributes`, {params: {
+                    sel: 'many'
+                }})
+                if(res.meta.status !== 200) return this.$message.error('获取商品分类参数出错')
+                res.data.forEach(item => {
+                    item.attr_vals = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
+                })
+                this.manyTableData = res.data
+            }
+        }
+    },
+    computed: {
+        cateID() {
+            if(this.addForm.goods_cat.length == 3) {
+                return this.addForm.goods_cat[2]
+            }
+            return null
         }
     },
     created() {
