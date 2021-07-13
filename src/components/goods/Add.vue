@@ -167,5 +167,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+.el-checkbox {
+    margin: 0, 5px, 0, 0git;
+}
 </style>
