@@ -61,7 +61,11 @@
                             </el-checkbox-group>
                         </el-form-item>
                     </el-tab-pane>
-                    <el-tab-pane label="商品属性" name="2">商品属性</el-tab-pane>
+                    <el-tab-pane label="商品属性" name="2">
+                        <el-form-item :label="item.attr_name" v-for="item in onlyTableData" :key="item.attr_id">
+                            <el-input v-model="item.attr_vals"></el-input>
+                        </el-form-item>
+                    </el-tab-pane>
                     <el-tab-pane label="商品图片" name="3">商品图片</el-tab-pane>
                     <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
                 </el-tabs>
@@ -109,7 +113,9 @@ export default {
                 // checkStrictly: true
             },
             //动态参数数据
-            manyTableData: []
+            manyTableData: [],
+            //静态属性数据
+            onlyTableData: [],
            
 
         }
@@ -139,7 +145,7 @@ export default {
         //tab标签栏被点击
         async tabClicked() {
             // console.log(this.activeIndex)
-            //点击的是商品参数页面，则发起获取商品参数的http请求
+            //点击的是商品动态参数页面，则发起获取商品参数的http请求
             if(this.activeIndex == '1') {
                 const { data: res } = await this.$http.get(`categories/${this.cateID}/attributes`, {params: {
                     sel: 'many'
@@ -149,6 +155,18 @@ export default {
                     item.attr_vals = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
                 })
                 this.manyTableData = res.data
+            }
+            //点击的是静态属性页面，则发起获取商品属性的http请求
+            if(this.activeIndex == '2') {
+                const { data: res } = await this.$http.get(`categories/${this.cateID}/attributes`, {params: {
+                    sel: 'only'
+                }})
+                if(res.meta.status !== 200) return this.$message.error('获取商品分类属性出错')
+                res.data.forEach(item => {
+                    item.attr_vals = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
+                })
+                this.onlyTableData = res.data
+                console.log(this.onlyTableData)
             }
         }
     },
