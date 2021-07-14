@@ -82,7 +82,16 @@
                     <el-tab-pane label="商品内容" name="4">商品内容</el-tab-pane>
                 </el-tabs>
             </el-form>
-        </el-card>/
+        </el-card>
+        <!-- 图片预览对话框 -->
+        <el-dialog
+            title="图片预览"
+            :visible.sync="previewVisible"
+            width="50%"
+            >
+            <img :src="previewPath" class="priviewImg">
+            
+        </el-dialog>
     </div>
 </template>
 
@@ -134,7 +143,9 @@ export default {
             //upload组件图片上传时http请求header头部
             headerObj: {
                 Authorization: window.sessionStorage.getItem('token')
-            }
+            },
+            previewPath: '',
+            previewVisible: false
             
            
 
@@ -190,8 +201,10 @@ export default {
             }
         },
         //图片预览
-        handlePreview() {
-
+        handlePreview(file) {
+            console.log(file)
+            this.previewPath = file.response.data.url
+            this.previewVisible = true
         },
         //图片删除
         handleRemove(file) {
@@ -225,5 +238,9 @@ export default {
 <style lang="less" scoped>
 .el-checkbox {
     margin: 0, 5px, 0, 0git;
+}
+
+.priviewImg {
+    width: 100%;
 }
 </style>
