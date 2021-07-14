@@ -72,7 +72,8 @@
                             :on-preview="handlePreview"
                             :on-remove="handleRemove"
                             list-type="picture"
-                            :headers="headerObj">
+                            :headers="headerObj"
+                            :on-success="handleSuccess">
                             <el-button size="small" type="primary">点击上传</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
@@ -96,7 +97,8 @@ export default {
                 goods_price: 0,
                 goods_weight: 0,
                 goods_number: 0,
-                goods_cat: []
+                goods_cat: [],
+                pics: []
 
             },
             addFormRules: {
@@ -183,7 +185,7 @@ export default {
                     item.attr_vals = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
                 })
                 this.onlyTableData = res.data
-                console.log(this.onlyTableData)
+                // console.log(this.onlyTableData)
             }
         },
         //图片预览
@@ -193,6 +195,13 @@ export default {
         //图片删除
         handleRemove() {
 
+        },
+        //图片上传成功事件处理
+        handleSuccess(response) {
+            // console.log(response)
+            const picInfo = {pic: response.data.tmp_path}
+            this.addForm.pics.push(picInfo)
+            // console.log(this.addForm.pics)
         }
     },
     computed: {
