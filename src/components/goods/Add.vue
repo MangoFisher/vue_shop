@@ -73,7 +73,8 @@
                             :on-remove="handleRemove"
                             list-type="picture"
                             :headers="headerObj"
-                            :on-success="handleSuccess">
+                            :on-success="handleSuccess"
+                            >
                             <el-button size="small" type="primary">点击上传</el-button>
                             <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
                         </el-upload>
@@ -193,8 +194,11 @@ export default {
 
         },
         //图片删除
-        handleRemove() {
-
+        handleRemove(file) {
+            // console.log(file)
+            const filePath = file.response.data.tmp_path
+            const i = this.addForm.pics.findIndex(x => x.pic == filePath)
+            this.addForm.pics.splice(i, 1)
         },
         //图片上传成功事件处理
         handleSuccess(response) {
