@@ -4,12 +4,17 @@ import router from './router'
 import './plugins/element.js'
 import './assets/fonts/iconfont.css'
 import TreeTable from 'vue-table-with-tree-grid'
-
+//导入富文本编辑器
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
 //将axios引入，并且挂在到全局vue实例中
 import axios from 'axios'
 Vue.prototype.$http = axios
 
 Vue.component('tree-table', TreeTable)
+Vue.use(VueQuillEditor)
 //全局注册对时间进行格式化的过滤器
 Vue.filter('dateFormat', function(original) {
   const dt = new Date(original)

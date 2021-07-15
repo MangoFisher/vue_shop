@@ -35,3 +35,7 @@ html,body,#app {
 .el-tabs {
     margin: 15px;
 }
+
+.ql-editor {
+   min-height: 300px; 
+}
