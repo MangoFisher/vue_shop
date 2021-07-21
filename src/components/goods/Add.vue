@@ -114,22 +114,23 @@ export default {
                 goods_number: 0,
                 goods_cat: [],
                 pics: [],
-                goods_introduce: ''
+                goods_introduce: '',
+                attrs: []
 
             },
             addFormRules: {
-               goods_name:[
+                goods_name:[
                    {required: true, message: '请输入商品名称', trigger: 'blur'}
-               ],
-               goods_price: [
+                ],
+                goods_price: [
                    {required: true, message: '请输入商品价格', trigger: 'blur'}
-               ],
-               goods_weight: [
+                ],
+                goods_weight: [
                    {required: true, message: '请输入商品重量', trigger: 'blur'}
-               ],
-               goods_number: [
+                ],
+                goods_number: [
                    {required: true, message: '请输入商品重量', trigger: 'blur'}
-               ]
+                ]
             },
             //商品分类数据
             cateList: [],
@@ -192,6 +193,7 @@ export default {
                     item.attr_vals = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
                 })
                 this.manyTableData = res.data
+                console.log(this.manyTableData)
             }
             //点击的是静态属性页面，则发起获取商品属性的http请求
             if(this.activeIndex == '2') {
@@ -199,11 +201,12 @@ export default {
                     sel: 'only'
                 }})
                 if(res.meta.status !== 200) return this.$message.error('获取商品分类属性出错')
+                // console.log(res.data)
                 res.data.forEach(item => {
                     item.attr_vals = item.attr_vals.length == 0 ? [] : item.attr_vals.split(',')
                 })
                 this.onlyTableData = res.data
-                // console.log(this.onlyTableData)
+                console.log(this.onlyTableData)
             }
         },
         //图片预览
@@ -228,14 +231,34 @@ export default {
         },
         //添加商品
         add() {
-            this.$refs.addFormRef.validate(valid => {
+            this.$refs.addFormRef.validate(async valid => {
                 if(!valid) {
                     this.$message.error('请填写必要的表单项！')
                 }
                 //执行添加的业务逻辑
                 const form = _.cloneDeep(this.addForm)
                 form.goods_cat = form.goods_cat.join(',')
-                console.log(form)
+                // console.log(form)
+                console.log(this.manyTableData)
+                console.log(this.onlyTableData)
+                this.manyTableData.forEach( item => {
+                    const newInfo = {
+                        attr_id: item.attr_id,
+                        attr_value: item.attr_vals.length == 0 ? '' : item.attr_vals.join(' ')
+                    }
+                    this.addForm.attrs.push(newInfo)
+                })
+                this.onlyTableData.forEach( item => {
+                    const newInfo = {
+                        attr_id: item.attr_id,
+                        attr_value: item.attr_vals.length == 0 ? '' : item.attr_vals.join(' ')
+                    }
+                    this.addForm.attrs.push(newInfo)
+                })
+                form.attrs = this.addForm.attrs
+                const { data: res } = await this.$http.post('goods', form)
+                if(res.meta.status !== 201) return this.$message.error('添加商品失败')
+                this.$router.push('/goods')
             })
         }
     },
