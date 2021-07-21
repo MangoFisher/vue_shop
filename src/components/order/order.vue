@@ -16,6 +16,30 @@
                     </el-input>
                 </el-col>
             </el-row>
+            <!-- 订单列表页面 -->
+            <el-table :data="ordersList" border stripe>
+                <el-table-column type="index"></el-table-column>
+                <el-table-column label="订单编号" prop="order_number"></el-table-column>
+                <el-table-column label="订单价格" prop="order_price"></el-table-column>
+                <el-table-column label="是否付款" prop="pay_status">
+                    <template slot-scope="scope">
+                        <el-tag type="danger" v-if="scope.row.pay_status == '0' ">未付款</el-tag>
+                        <el-tag type="success" v-else>已付款</el-tag>
+                    </template>
+                </el-table-column>
+                <el-table-column label="是否发货" prop="is_send"></el-table-column>
+                <el-table-column label="下单时间" prop="create_time">
+                    <template slot-scope="scope">
+                        {{ scope.row.create_time | dateFormat }}
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button size="mini" type="primary" icon="el-icon-edit"></el-button>
+                        <el-button size="mini" type="success" icon="el-icon-location"></el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
         </el-card>
 
     </div>
@@ -40,7 +64,7 @@ export default {
                 params: this.queryInfo  
             })
             if(res.meta.status !== 200) return this.$message.error('获取订单列表出错')
-            this.ordersList = res.data.goodsList
+            this.ordersList = res.data.goods
             this.total = res.data.total
             // console.log(res.data)
         }
