@@ -100,6 +100,7 @@
 </template>
 
 <script>
+import _ from 'lodash'
 export default {
     data() {
         return {
@@ -232,6 +233,9 @@ export default {
                     this.$message.error('请填写必要的表单项！')
                 }
                 //执行添加的业务逻辑
+                const form = _.cloneDeep(this.addForm)
+                form.goods_cat = form.goods_cat.join(',')
+                console.log(form)
             })
         }
     },
