@@ -84,7 +84,14 @@
             :visible.sync="progressVisible"
             width="30%"
             >
-            <span>这是一段信息</span>
+            <el-timeline :reverse="false">
+                <el-timeline-item
+                v-for="activity in progressInfo"
+                :key="activity.time"
+                :timestamp="activity.time">
+                {{activity.context}}
+                </el-timeline-item>
+            </el-timeline>
         </el-dialog>
     </div>
 </template>
