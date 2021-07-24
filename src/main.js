@@ -12,6 +12,10 @@ import 'quill/dist/quill.bubble.css'
 //将axios引入，并且挂在到全局vue实例中
 import axios from 'axios'
 Vue.prototype.$http = axios
+import echarts from "echarts"
+// Vue.prototype.$echarts = echarts;
+
+
 
 Vue.component('tree-table', TreeTable)
 Vue.use(VueQuillEditor)
