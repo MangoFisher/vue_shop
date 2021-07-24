@@ -51,10 +51,10 @@ export default {
 
         const { data: res } = await this.$http.get('reports/type/1')
         if(res.meta.status !== 200) return this.$message.error('获取数据报表数据出错');
-        console.log(res)
+        // console.log(res)
 
         const result = _.merge(res.data, this.option)
-        console.log(result)
+        // console.log(result)
         myChart.setOption(result)
     }
 }

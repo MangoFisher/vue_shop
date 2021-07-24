@@ -15,6 +15,10 @@ Vue.prototype.$http = axios
 import echarts from "echarts"
 // Vue.prototype.$echarts = echarts;
 
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
+// import { config } from 'vue/types/umd'
 
 
 Vue.component('tree-table', TreeTable)
@@ -35,7 +39,13 @@ Vue.filter('dateFormat', function(original) {
 
 //设置axios请求拦截器，在axios发起所有请求之前，将客户端记录的'token'字段的值，放置到请求的header中的Authorization字段中
 axios.interceptors.request.use(config => {
+  NProgress.start()
   config.headers.Authorization = window.sessionStorage.getItem('token')
+  return config
+})
+
+axios.interceptors.response.use(config => {
+  NProgress.done()
   return config
 })
 
