@@ -36,7 +36,7 @@
                 <el-table-column label="操作">
                     <template slot-scope="scope">
                         <el-button size="mini" type="primary" icon="el-icon-edit" @click="showBox"></el-button>
-                        <el-button size="mini" type="success" icon="el-icon-location"></el-button>
+                        <el-button size="mini" type="success" icon="el-icon-location" @click="showProcessBox"></el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -78,6 +78,14 @@
                 <el-button type="primary" @click="addressVisible = false">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 显示物流信息对话框 -->
+        <el-dialog
+            title="物流进度"
+            :visible.sync="progressVisible"
+            width="30%"
+            >
+            <span>这是一段信息</span>
+        </el-dialog>
     </div>
 </template>
 
@@ -114,7 +122,10 @@ export default {
                 children: 'children'
                 // checkStrictly: true
             },
-            cityOptions: cityOptions
+            cityOptions: cityOptions,
+            progressVisible: false,
+            //物流信息
+            progressInfo: []
 
         }
     },
@@ -144,6 +155,13 @@ export default {
         handleChange() {},
         addressDialogClosed() {
             this.$refs.addressFormrRef.resetFields()
+        },
+        async showProcessBox() {
+            const { data: res } = await this.$http.get('/kuaidi/78217358159063')
+            if(res.meta.status !== 200) return this.$message.error('获取物流信息出错')
+            this.progressInfo = res.data
+            this.progressVisible = true
+            // console.log(this.progressInfo)
         }
 
     },
