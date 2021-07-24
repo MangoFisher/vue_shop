@@ -19,18 +19,11 @@
 <script>
 //创建echarts实例
 var echarts = require('echarts')
+import _ from 'lodash'
 export default {
     data() {
-        return {}
-    },
-    methods: {},
-    created() {},
-    mounted() {
-        // var echarts = require('echarts')
-        var myChart = echarts.init(document.getElementById('main'));
-
-        // 指定图表的配置项和数据
-        var option = {
+        return {
+            option: {
             title: {
                 text: 'ECharts 入门示例'
             },
@@ -48,7 +41,21 @@ export default {
                 data: [5, 20, 36, 10, 10, 20]
             }]
         }
-        myChart.setOption(option)
+        }
+    },
+    methods: {},
+    created() {},
+    async mounted() {
+        // var echarts = require('echarts')
+        var myChart = echarts.init(document.getElementById('main'));
+
+        const { data: res } = await this.$http.get('reports/type/1')
+        if(res.meta.status !== 200) return this.$message.error('获取数据报表数据出错');
+        console.log(res)
+
+        const result = _.merge(res.data, this.option)
+        console.log(result)
+        myChart.setOption(result)
     }
 }
 </script>
