@@ -54,7 +54,7 @@ export default {
         // console.log(res)
 
         const result = _.merge(res.data, this.option)
-        // console.log(result)
+        console.log(result)
         myChart.setOption(result)
     }
 }
